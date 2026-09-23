@@ -12,15 +12,9 @@ docker -v
 
 Shows the installed Docker version.
 
-Example:
-
-```text
-Docker version 28.x.x
-```
-
 ---
 
-# 2. Run a Docker Container
+## 2. Run a Docker Container
 
 ```bash
 docker run -it ubuntu
@@ -28,30 +22,22 @@ docker run -it ubuntu
 
 ### Meaning
 
-* `docker run` → Create and start a new container
-* `-i` → Interactive mode
-* `-t` → Allocate a terminal
-* `ubuntu` → Docker image
+- `docker run` → Create and start a new container
+- `-i` → Interactive mode
+- `-t` → Allocate a terminal
+- `ubuntu` → Docker image
 
 After running this command, you will enter the Ubuntu container.
 
 Example:
 
-```bash
-docker run -it ubuntu
-```
-
-You may see:
-
 ```text
 root@abc123:/#
 ```
 
-Now you are inside the Ubuntu container.
-
 ---
 
-# 3. List Running Containers
+## 3. List Running Containers
 
 ```bash
 docker container ls
@@ -67,7 +53,7 @@ Shows currently running containers.
 
 ---
 
-# 4. List All Containers
+## 4. List All Containers
 
 ```bash
 docker container ls -a
@@ -81,13 +67,13 @@ docker ps -a
 
 Shows:
 
-* Running containers
-* Stopped containers
-* Exited containers
+- Running containers
+- Stopped containers
+- Exited containers
 
 ---
 
-# 5. Start a Container
+## 5. Start a Container
 
 ```bash
 docker start docker_name
@@ -103,7 +89,7 @@ Starts an existing stopped container.
 
 ---
 
-# 6. Stop a Container
+## 6. Stop a Container
 
 ```bash
 docker stop docker_name
@@ -119,7 +105,7 @@ Stops a running container.
 
 ---
 
-# 7. Execute a Command Inside Container
+## 7. Execute a Command Inside Container
 
 ```bash
 docker exec docker_name ls
@@ -135,7 +121,7 @@ Runs the `ls` command inside the container.
 
 ---
 
-# 8. Open Bash Inside Container
+## 8. Open Bash Inside Container
 
 ```bash
 docker exec -it docker_name bash
@@ -149,12 +135,6 @@ docker exec -it test01 bash
 
 Now you can work inside the running container.
 
-Example:
-
-```bash
-root@abc123:/#
-```
-
 Exit the container shell:
 
 ```bash
@@ -165,7 +145,7 @@ exit
 
 ---
 
-# 9. List Docker Images
+## 9. List Docker Images
 
 ```bash
 docker images
@@ -250,12 +230,6 @@ The correct syntax is:
 -p 1025:80
 ```
 
-Not:
-
-```bash
-p 80:80
-```
-
 The `-` before `p` is required.
 
 ---
@@ -331,11 +305,11 @@ This shows detailed information about the default Docker bridge network.
 
 You can see:
 
-* Network configuration
-* IP range
-* Gateway
-* Connected containers
-* Container IP addresses
+- Network configuration
+- IP range
+- Gateway
+- Connected containers
+- Container IP addresses
 
 ---
 
@@ -355,8 +329,6 @@ Container
 Host Machine
 ```
 
-Port isolation works differently with host networking because the container uses the host network directly.
-
 > Host networking behaves differently depending on the operating system. It is most directly useful on Linux.
 
 ---
@@ -371,8 +343,6 @@ The container gets no normal external network connectivity.
 
 This can be useful when you want a container to operate without networking.
 
-Example:
-
 ```text
 Container
    X
@@ -380,7 +350,7 @@ Container
 No Network
 ```
 
-> `--network=none` is more accurately described as disabling the container's network interfaces (apart from the loopback interface), rather than simply meaning "offline."
+> `--network=none` is more accurately described as disabling the container's network interfaces apart from loopback.
 
 ---
 
@@ -422,9 +392,9 @@ docker network create
 
 Where:
 
-* `docker network create` → Creates a network
-* `-d bridge` → Uses the bridge driver
-* `homenetwork` → Network name
+- `docker network create` → Creates a network
+- `-d bridge` → Uses the bridge driver
+- `homenetwork` → Network name
 
 ---
 
@@ -459,12 +429,12 @@ docker network inspect homenetwork
 
 This shows:
 
-* Network ID
-* Driver
-* Subnet
-* Gateway
-* Connected containers
-* Container IP addresses
+- Network ID
+- Driver
+- Subnet
+- Gateway
+- Connected containers
+- Container IP addresses
 
 ---
 
@@ -501,8 +471,6 @@ homenetwork
 ```
 
 They can communicate with each other using their container names.
-
-Example:
 
 ```text
 test01  ────── homenetwork ────── test02
@@ -601,29 +569,29 @@ docker network inspect <network>
 ### Create network
 
 ```bash
-docker network create <network>
+docker network create <name>
 ```
 
 ---
 
 # 23. Quick Docker Cheat Sheet
 
-| Task               | Command                            |
-| ------------------ | ---------------------------------- |
-| Docker version     | `docker -v`                        |
-| Running containers | `docker ps`                        |
-| All containers     | `docker ps -a`                     |
-| Images             | `docker images`                    |
-| Start container    | `docker start <name>`              |
-| Stop container     | `docker stop <name>`               |
-| Container logs     | `docker logs <name>`               |
-| Execute command    | `docker exec <name> <command>`     |
-| Open Bash          | `docker exec -it <name> bash`      |
-| Remove container   | `docker rm <name>`                 |
-| Remove image       | `docker rmi <image>`               |
-| List networks      | `docker network ls`                |
-| Inspect network    | `docker network inspect <network>` |
-| Create network     | `docker network create <name>`     |
+| Task | Command |
+|---|---|
+| Docker version | `docker -v` |
+| Running containers | `docker ps` |
+| All containers | `docker ps -a` |
+| Images | `docker images` |
+| Start container | `docker start <name>` |
+| Stop container | `docker stop <name>` |
+| Container logs | `docker logs <name>` |
+| Execute command | `docker exec <name> <command>` |
+| Open Bash | `docker exec -it <name> bash` |
+| Remove container | `docker rm <name>` |
+| Remove image | `docker rmi <image>` |
+| List networks | `docker network ls` |
+| Inspect network | `docker network inspect <network>` |
+| Create network | `docker network create <name>` |
 
 ---
 
@@ -684,16 +652,16 @@ ubuntu
 
 This combines:
 
-* Interactive terminal
-* Container name
-* Port mapping
-* Environment variable
-* Custom network
-* Docker image
+- Interactive terminal
+- Container name
+- Port mapping
+- Environment variable
+- Custom network
+- Docker image
 
 ---
 
-## 🚀 Next Docker Topics
+# 🚀 Next Docker Topics
 
 After learning these commands, the next topics to learn are:
 
