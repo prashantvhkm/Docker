@@ -1,0 +1,713 @@
+# 🐳 Docker Beginner Notes
+
+A quick reference guide for commonly used Docker commands, containers, port mapping, environment variables, and networks.
+
+---
+
+## 1. Check Docker Version
+
+```bash
+docker -v
+```
+
+Shows the installed Docker version.
+
+Example:
+
+```text
+Docker version 28.x.x
+```
+
+---
+
+# 2. Run a Docker Container
+
+```bash
+docker run -it ubuntu
+```
+
+### Meaning
+
+* `docker run` → Create and start a new container
+* `-i` → Interactive mode
+* `-t` → Allocate a terminal
+* `ubuntu` → Docker image
+
+After running this command, you will enter the Ubuntu container.
+
+Example:
+
+```bash
+docker run -it ubuntu
+```
+
+You may see:
+
+```text
+root@abc123:/#
+```
+
+Now you are inside the Ubuntu container.
+
+---
+
+# 3. List Running Containers
+
+```bash
+docker container ls
+```
+
+or:
+
+```bash
+docker ps
+```
+
+Shows currently running containers.
+
+---
+
+# 4. List All Containers
+
+```bash
+docker container ls -a
+```
+
+or:
+
+```bash
+docker ps -a
+```
+
+Shows:
+
+* Running containers
+* Stopped containers
+* Exited containers
+
+---
+
+# 5. Start a Container
+
+```bash
+docker start docker_name
+```
+
+Example:
+
+```bash
+docker start test01
+```
+
+Starts an existing stopped container.
+
+---
+
+# 6. Stop a Container
+
+```bash
+docker stop docker_name
+```
+
+Example:
+
+```bash
+docker stop test01
+```
+
+Stops a running container.
+
+---
+
+# 7. Execute a Command Inside Container
+
+```bash
+docker exec docker_name ls
+```
+
+Example:
+
+```bash
+docker exec test01 ls
+```
+
+Runs the `ls` command inside the container.
+
+---
+
+# 8. Open Bash Inside Container
+
+```bash
+docker exec -it docker_name bash
+```
+
+Example:
+
+```bash
+docker exec -it test01 bash
+```
+
+Now you can work inside the running container.
+
+Example:
+
+```bash
+root@abc123:/#
+```
+
+Exit the container shell:
+
+```bash
+exit
+```
+
+> `exit` leaves the shell but does not remove the container.
+
+---
+
+# 9. List Docker Images
+
+```bash
+docker images
+```
+
+Shows all Docker images available locally.
+
+Example:
+
+```text
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       latest    abc123         2 weeks ago   78MB
+```
+
+---
+
+# 10. Port Mapping
+
+Port mapping allows applications running inside a Docker container to be accessed from the host machine.
+
+Syntax:
+
+```bash
+docker run -it -p HOST_PORT:CONTAINER_PORT IMAGE
+```
+
+Example:
+
+```bash
+docker run -it -p 1025:1025 ubuntu
+```
+
+The format is:
+
+```text
+HOST PORT : CONTAINER PORT
+```
+
+For example:
+
+```text
+1025:1025
+```
+
+means:
+
+```text
+Host       → Container
+1025       → 1025
+```
+
+---
+
+## 11. Different Host and Container Ports
+
+You can map different ports.
+
+```bash
+docker run -it -p 1025:80 ubuntu
+```
+
+Meaning:
+
+```text
+Host Port       Container Port
+   1025     →       80
+```
+
+If a web application is running on port `80` inside the container, you can access it through port `1025` on the host.
+
+Example:
+
+```text
+http://localhost:1025
+```
+
+### Important
+
+The correct syntax is:
+
+```bash
+-p 1025:80
+```
+
+Not:
+
+```bash
+p 80:80
+```
+
+The `-` before `p` is required.
+
+---
+
+# 12. Environment Variable Mapping
+
+Environment variables can be passed into a container using:
+
+```bash
+-e KEY=VALUE
+```
+
+Example:
+
+```bash
+docker run -it \
+-e APP_ENV=Development \
+-e APP_NAME=MyApp \
+ubuntu
+```
+
+Inside the container:
+
+```bash
+echo $APP_ENV
+```
+
+Output:
+
+```text
+Development
+```
+
+Another example:
+
+```bash
+docker run -it \
+-p 1025:80 \
+-e DB_SERVER=localhost \
+-e DB_NAME=MyDatabase \
+-e DB_USER=admin \
+ubuntu
+```
+
+---
+
+# 13. Docker Networks
+
+List Docker networks:
+
+```bash
+docker network ls
+```
+
+Example:
+
+```text
+NETWORK ID     NAME      DRIVER
+abc123         bridge    bridge
+def456         host      host
+ghi789         none      null
+```
+
+---
+
+# 14. Inspect Bridge Network
+
+```bash
+docker network inspect bridge
+```
+
+This shows detailed information about the default Docker bridge network.
+
+You can see:
+
+* Network configuration
+* IP range
+* Gateway
+* Connected containers
+* Container IP addresses
+
+---
+
+# 15. Host Network
+
+```bash
+docker run -it --network=host ubuntu
+```
+
+With host networking, the container shares the host's network stack.
+
+```text
+Container
+    |
+    | Host Network
+    |
+Host Machine
+```
+
+Port isolation works differently with host networking because the container uses the host network directly.
+
+> Host networking behaves differently depending on the operating system. It is most directly useful on Linux.
+
+---
+
+# 16. None Network
+
+```bash
+docker run -it --network=none ubuntu
+```
+
+The container gets no normal external network connectivity.
+
+This can be useful when you want a container to operate without networking.
+
+Example:
+
+```text
+Container
+   X
+   |
+No Network
+```
+
+> `--network=none` is more accurately described as disabling the container's network interfaces (apart from the loopback interface), rather than simply meaning "offline."
+
+---
+
+# 17. Default Bridge Network
+
+Docker automatically provides a default network called:
+
+```text
+bridge
+```
+
+You can inspect it:
+
+```bash
+docker network inspect bridge
+```
+
+Containers connected to the same Docker network can communicate with each other.
+
+---
+
+# 18. Create a Custom Network
+
+Create a custom bridge network:
+
+```bash
+docker network create -d bridge homenetwork
+```
+
+Meaning:
+
+```text
+docker network create
+        |
+        +-- -d bridge
+        |
+        +-- homenetwork
+```
+
+Where:
+
+* `docker network create` → Creates a network
+* `-d bridge` → Uses the bridge driver
+* `homenetwork` → Network name
+
+---
+
+# 19. Run Container on Custom Network
+
+```bash
+docker run -it \
+--network=homenetwork \
+--name=test01 \
+ubuntu
+```
+
+This creates a container named:
+
+```text
+test01
+```
+
+and connects it to:
+
+```text
+homenetwork
+```
+
+---
+
+# 20. Inspect Custom Network
+
+```bash
+docker network inspect homenetwork
+```
+
+This shows:
+
+* Network ID
+* Driver
+* Subnet
+* Gateway
+* Connected containers
+* Container IP addresses
+
+---
+
+# 21. Example: Two Containers Communicating
+
+Create network:
+
+```bash
+docker network create -d bridge homenetwork
+```
+
+Create first container:
+
+```bash
+docker run -it \
+--network=homenetwork \
+--name=test01 \
+ubuntu
+```
+
+Create second container:
+
+```bash
+docker run -it \
+--network=homenetwork \
+--name=test02 \
+ubuntu
+```
+
+Now both containers are connected to:
+
+```text
+homenetwork
+```
+
+They can communicate with each other using their container names.
+
+Example:
+
+```text
+test01  ────── homenetwork ────── test02
+```
+
+Docker's embedded DNS allows container names to be resolved on a user-defined network.
+
+---
+
+# 22. Useful Docker Commands
+
+### Check Docker version
+
+```bash
+docker -v
+```
+
+### Show running containers
+
+```bash
+docker ps
+```
+
+### Show all containers
+
+```bash
+docker ps -a
+```
+
+### Show images
+
+```bash
+docker images
+```
+
+### Start container
+
+```bash
+docker start <container>
+```
+
+### Stop container
+
+```bash
+docker stop <container>
+```
+
+### Remove container
+
+```bash
+docker rm <container>
+```
+
+### Remove image
+
+```bash
+docker rmi <image>
+```
+
+### View container logs
+
+```bash
+docker logs <container>
+```
+
+### Follow container logs
+
+```bash
+docker logs -f <container>
+```
+
+### Execute command
+
+```bash
+docker exec <container> <command>
+```
+
+### Open Bash
+
+```bash
+docker exec -it <container> bash
+```
+
+### List networks
+
+```bash
+docker network ls
+```
+
+### Inspect network
+
+```bash
+docker network inspect <network>
+```
+
+### Create network
+
+```bash
+docker network create <network>
+```
+
+---
+
+# 23. Quick Docker Cheat Sheet
+
+| Task               | Command                            |
+| ------------------ | ---------------------------------- |
+| Docker version     | `docker -v`                        |
+| Running containers | `docker ps`                        |
+| All containers     | `docker ps -a`                     |
+| Images             | `docker images`                    |
+| Start container    | `docker start <name>`              |
+| Stop container     | `docker stop <name>`               |
+| Container logs     | `docker logs <name>`               |
+| Execute command    | `docker exec <name> <command>`     |
+| Open Bash          | `docker exec -it <name> bash`      |
+| Remove container   | `docker rm <name>`                 |
+| Remove image       | `docker rmi <image>`               |
+| List networks      | `docker network ls`                |
+| Inspect network    | `docker network inspect <network>` |
+| Create network     | `docker network create <name>`     |
+
+---
+
+# 24. Important Docker Concepts
+
+```text
+Docker
+  │
+  ├── Images
+  │      │
+  │      └── Template used to create containers
+  │
+  ├── Containers
+  │      │
+  │      └── Running instance of an image
+  │
+  ├── Ports
+  │      │
+  │      └── Host ↔ Container communication
+  │
+  ├── Environment Variables
+  │      │
+  │      └── Configuration passed to containers
+  │
+  └── Networks
+         │
+         └── Container-to-container communication
+```
+
+### Image vs Container
+
+```text
+Docker Image
+     │
+     │ docker run
+     ↓
+Docker Container
+```
+
+An **image** is the template.
+
+A **container** is a running/created instance of that image.
+
+---
+
+# 25. Common Docker Run Pattern
+
+A useful general pattern is:
+
+```bash
+docker run -it \
+--name mycontainer \
+-p 8080:80 \
+-e APP_ENV=Development \
+--network=homenetwork \
+ubuntu
+```
+
+This combines:
+
+* Interactive terminal
+* Container name
+* Port mapping
+* Environment variable
+* Custom network
+* Docker image
+
+---
+
+## 🚀 Next Docker Topics
+
+After learning these commands, the next topics to learn are:
+
+1. Dockerfile
+2. `docker build`
+3. Docker images
+4. Docker volumes
+5. Docker Compose
+6. Docker Hub
+7. Container-to-container communication
+8. Docker with SQL Server
+9. Docker with Redis
+10. Dockerizing ASP.NET Core API
+11. Dockerizing React/Vite
+12. Docker Compose for React + .NET API + SQL Server + Redis
+13. Docker deployment on Windows/Linux Server
+14. Kubernetes
